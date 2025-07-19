@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register</title>
+    <style>
+        /* Gradient Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        /* Title Animation */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form Styling */
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Input Fields */
+        input, select {
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            font-size: 1rem;
+            width: 90%;
+            text-align: center;
+        }
+
+        /* Button */
+        button {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 12px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Button Hover */
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Validation Error */
+        .error {
+            color: yellow;
+            display: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Register</h1>
+    <form method="post" onsubmit="return validateForm()">
+        <label>Username:</label>
+        <input type="text" id="username" name="username">
+        <span class="error" id="userError">Username required!</span>
+
+        <label>Password:</label>
+        <input type="password" id="password" name="password">
+        <span class="error" id="passError">Password required!</span>
+
+        <label>Role:</label>
+        <select name="role">
+            <option value="admin">Admin</option>
+            <option value="student">Student</option>
+        </select>
+
+        <button type="submit">Register</button>
+    </form>
+    
+    <p>Already have an account? <a href="/login" style="color: yellow;">Login</a></p>
+
+    <script>
+        function validateForm() {
+            let username = document.getElementById("username").value.trim();
+            let password = document.getElementById("password").value.trim();
+            let valid = true;
+
+            document.getElementById("userError").style.display = "none";
+            document.getElementById("passError").style.display = "none";
+
+            if (username === "") {
+                document.getElementById("userError").style.display = "block";
+                valid = false;
+            }
+
+            if (password === "") {
+                document.getElementById("passError").style.display = "block";
+                valid = false;
+            }
+
+            return valid;
+        }
+    </script>
+</body>
+</html>

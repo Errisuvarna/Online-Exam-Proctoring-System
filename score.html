@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Exam Result</title>
+    <style>
+        /* Gradient Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Celebration Text */
+        h1 {
+            font-size: 3rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-top: 10px;
+            color: #ffd700;
+            animation: pop 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* Logout Button */
+        .button {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Confetti Effect */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: gold;
+            opacity: 0.7;
+            border-radius: 50%;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) translateX(0) rotate(0deg); }
+            100% { transform: translateY(100vh) translateX(20px) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Exam Completed 🎉</h1>
+    <h2>Your Score: {{ score }}</h2>
+    <a href="/logout" class="button">Logout</a>
+
+    <script>
+        // Generate Confetti Effect
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                let confetti = document.createElement("div");
+                confetti.className = "confetti";
+                confetti.style.left = Math.random() * window.innerWidth + "px";
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                confetti.style.backgroundColor = ["gold", "red", "blue", "green", "pink", "purple", "orange"][Math.floor(Math.random() * 7)];
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+        createConfetti();
+    </script>
+</body>
+</html>

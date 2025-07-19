@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6e8efb, #a777e3);
+            --success-gradient: linear-gradient(135deg, #0ba360, #3cba92);
+            --warning-gradient: linear-gradient(135deg, #f6d365, #fda085);
+            --danger-gradient: linear-gradient(135deg, #ff5858, #f857a6);
+            --neutral-gradient: linear-gradient(135deg, #8e9eab, #eef2f3);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.4;
+            filter: blur(40px);
+            transform: translateZ(0);
+        }
+
+        .shape-1 {
+            background: #6e8efb;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+        }
+
+        .shape-2 {
+            background: #a777e3;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            bottom: -50px;
+            right: -50px;
+        }
+
+        .shape-3 {
+            background: #fda085;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            bottom: 100px;
+            left: 20%;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        .header {
+            background: var(--primary-gradient);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .header h2 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: var(--text-shadow);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .result-card {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .score-container {
+            margin: 20px 0 40px;
+            position: relative;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #f5f7fa;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .score-circle::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border-radius: 50%;
+            background: white;
+            z-index: 1;
+        }
+
+        .score-text {
+            position: relative;
+            z-index: 2;
+            font-size: 3rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .score-percent {
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        .circle-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 20px 0;
+            min-height: 60px;
+        }
+
+        .excellent {
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .good {
+            background: var(--warning-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .needs-improvement {
+            background: var(--danger-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .breakdown {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f5f7fa;
+            border-radius: var(--border-radius);
+        }
+
+        .breakdown h3 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .breakdown-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            flex-shrink: 0;
+            color: white;
+        }
+
+        .breakdown-icon.correct {
+            background: var(--success-gradient);
+        }
+
+        .breakdown-icon.incorrect {
+            background: var(--danger-gradient);
+        }
+
+        .breakdown-icon.skipped {
+            background: var(--neutral-gradient);
+        }
+
+        .breakdown-text {
+            flex-grow: 1;
+        }
+
+        .breakdown-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .breakdown-value {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(110, 142, 251, 0.6);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-gradient);
+            box-shadow: 0 4px 15px rgba(142, 158, 171, 0.4);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(142, 158, 171, 0.6);
+        }
+
+        .share-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .share-title {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .share-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-5px);
+        }
+
+        .twitter {
+            background: linear-gradient(135deg, #1DA1F2, #0e71a8);
+            box-shadow: 0 4px 10px rgba(29, 161, 242, 0.4);
+        }
+
+        .facebook {
+            background: linear-gradient(135deg, #3b5998, #2d4373);
+            box-shadow: 0 4px 10px rgba(59, 89, 152, 0.4);
+        }
+
+        .linkedin {
+            background: linear-gradient(135deg, #0077B5, #00669c);
+            box-shadow: 0 4px 10px rgba(0, 119, 181, 0.4);
+        }
+
+        .whatsapp {
+            background: linear-gradient(135deg, #25D366, #1da851);
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.4);
+        }
+
+        .certificate-preview {
+            margin-top: 40px;
+            padding: 20px;
+            border: 2px dashed #ddd;
+            border-radius: var(--border-radius);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .certificate-preview:hover {
+            border-color: #6e8efb;
+            background: rgba(110, 142, 251, 0.05);
+        }
+
+        .certificate-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%236e8efb' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .certificate-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #6e8efb;
+        }
+
+        .certificate-text {
+            font-weight: 500;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+            }
+
+            .header h2 {
+                font-size: 1.8rem;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-text {
+                font-size: 2.5rem;
+            }
+
+            .message {
+                font-size: 1.2rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <div class="container">
+        <div class="header">
+            <h2>Exam Completed!</h2>
+            <p>Here's how you performed</p>
+        </div>
+
+        <div class="result-card">
+            <div class="score-container">
+                <div class="score-circle">
+                    <div class="score-text">
+                        <span id="score-value">{{ score }}</span>/<span id="total-value">{{ total }}</span>
+                        <div class="score-percent" id="score-percent">0%</div>
+                    </div>
+                    <canvas class="circle-progress" id="score-chart" width="200" height="200"></canvas>
+                </div>
+            </div>
+
+            <div class="message" id="result-message">Calculating your results...</div>
+
+            <div class="breakdown">
+                <h3>Performance Breakdown</h3>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon correct">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="breakdown-text">
+                        <div class="breakdown-title">Correct Answers</div>
+                        <div class="breakdown-value" id="correct-count">{{ score }} questions</div>
+                    </div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon incorrect">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="breakdown-text">
+                        <div class="breakdown-title">Incorrect Answers</div>
+                        <div class="breakdown-value" id="incorrect-count">{{ total - score }} questions</div>
+                    </div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="breakdown-icon skipped">
+                        <i class="fas fa-minus"></i>
+                    </div>
+                    <div class="breakdown-text">
+                        <div class="breakdown-title">Time Taken</div>
+                        <div class="breakdown-value" id="time-taken">Calculating...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="certificate-preview" id="certificate-btn">
+                <div class="certificate-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <div class="certificate-text">Click to view and download your certificate</div>
+            </div>
+
+            <div class="share-container">
+                <div class="share-title">Share your results</div>
+                <div class="share-buttons">
+                    <div class="share-btn twitter" onclick="shareResult('twitter')">
+                        <i class="fab fa-twitter"></i>
+                    </div>
+                    <div class="share-btn facebook" onclick="shareResult('facebook')">
+                        <i class="fab fa-facebook-f"></i>
+                    </div>
+                    <div class="share-btn linkedin" onclick="shareResult('linkedin')">
+                        <i class="fab fa-linkedin-in"></i>
+                    </div>
+                    <div class="share-btn whatsapp" onclick="shareResult('whatsapp')">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="/review-exam" class="btn btn-secondary">
+                    <i class="fas fa-search"></i> Review Answers
+                </a>
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-home"></i> Return to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Online Examination System
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/confetti-js@0.0.18/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        // Variables from template
+        const score = {{ score }};
+        const total = {{ total }};
+        const percentage = Math.round((score / total) * 100);
+        
+        // DOM elements
+        const scoreValue = document.getElementById('score-value');
+        const totalValue = document.getElementById('total-value');
+        const scorePercent = document.getElementById('score-percent');
+        const resultMessage = document.getElementById('result-message');
+        const correctCount = document.getElementById('correct-count');
+        const incorrectCount = document.getElementById('incorrect-count');
+        const timeTaken = document.getElementById('time-taken');
+        const certificateBtn = document.getElementById('certificate-btn');
+        
+        // Initialize animations and effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate score counting
+            animateValue(scoreValue, 0, score, 1500);
+            
+            // Animate percentage
+            setTimeout(() => {
+                animateValue(scorePercent, 0, percentage, 1000, '%');
+            }, 500);
+            
+            // Draw circle progress
+            setTimeout(() => {
+                drawScoreChart();
+            }, 300);
+            
+            // Set result message
+            setTimeout(() => {
+                setResultMessage();
+            }, 1800);
+            
+            // Set breakdown values
+            correctCount.textContent = `${score} questions`;
+            incorrectCount.textContent = `${total - score} questions`;
+            
+            // Calculate random time taken (for demo)
+            const minutes = Math.floor(Math.random() * 20) + 10;
+            const seconds = Math.floor(Math.random() * 60);
+            timeTaken.textContent = `${minutes}m ${seconds}s`;
+            
+            // Launch confetti if score is good
+            if (percentage >= 70) {
+                launchConfetti();
+            }
+            
+            // Certificate button effect
+            certificateBtn.addEventListener('click', function() {
+                showCertificate();
+            });
+        });
+        
+        // Animate counting from start to end
+        function animateValue(element, start, end, duration, suffix = '') {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = value + suffix;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+        
+        // Draw circular progress chart
+        function drawScoreChart() {
+            const canvas = document.getElementById('score-chart');
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 90;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 15;
+            ctx.stroke();
+            
+            // Determine color based on score
+            let gradientColor1, gradientColor2;
+            if (percentage >= 80) {
+                gradientColor1 = '#0ba360';
+                gradientColor2 = '#3cba92';
+            } else if (percentage >= 60) {
+                gradientColor1 = '#f6d365';
+                gradientColor2 = '#fda085';
+            } else {
+                gradientColor1 = '#ff5858';
+                gradientColor2 = '#f857a6';
+            }
+            
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            gradient.addColorStop(0, gradientColor1);
+            gradient.addColorStop(1, gradientColor2);
+            
+            // Animate progress circle
+            let currentPercentage = 0;
+            const targetPercentage = percentage / 100;
+            const animationDuration = 1500; // ms
+            const startTime = performance.now();
+            
+            function animateCircle(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / animationDuration, 1);
+                currentPercentage = progress * targetPercentage;
+                
+                // Draw progress arc
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, -0.5 * Math.PI, (-0.5 + 2 * currentPercentage) * Math.PI);
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 15;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animateCircle);
+                }
+            }
+            
+            requestAnimationFrame(animateCircle);
+        }
+        
+        // Set result message based on score
+        function setResultMessage() {
+            let message = '';
+            let className = '';
+            
+            if (percentage >= 90) {
+                message = 'Outstanding Performance! 🏆';
+                className = 'excellent';
+            } else if (percentage >= 80) {
+                message = 'Excellent Work! 🌟';
+                className = 'excellent';
+            } else if (percentage >= 70) {
+                message = 'Great Job! 👏';
+                className = 'good';
+            } else if (percentage >= 60) {
+                message = 'Good Effort! 👍';
+                className = 'good';
+            } else if (percentage >= 50) {
+                message = 'You Passed! Keep Practicing.';
+                className = 'good';
+            } else {
+                message = 'Keep Learning & Try Again.';
+                className = 'needs-improvement';
+            }
+            
+            resultMessage.textContent = message;
+            resultMessage.className = `message ${className}`;
+            resultMessage.style.animation = 'fadeIn 1s ease';
+        }
+        
+        // Launch confetti animation
+        function launchConfetti() {
+            const confettiSettings = {
+                target: 'confetti-container',
+                max: 150,
+                size: 1.5,
+                animate: true,
+                respawn: false,
+                props: ['circle', 'square', 'triangle', 'line'],
+                colors: [[165,104,246], [230,61,135], [0,199,228], [253,214,126]],
+                clock: 25,
+                rotate: true,
+                start_from_edge: true,
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+            
+            const confetti = new ConfettiGenerator(confettiSettings);
+            confetti.render();
+            
+            // Stop confetti after 5 seconds
+            setTimeout(() => {
+                confetti.clear();
+            }, 5000);
+        }
+        
+        // Show certificate modal
+        function showCertificate() {
+            // Create modal overlay
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            overlay.style.display = 'flex';
+            overlay.style.alignItems = 'center';
+            overlay.style.justifyContent = 'center';
+            overlay.style.zIndex = '1000';
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 0.3s ease';
+            
+            // Create certificate container
+            const certificateContainer = document.createElement('div');
+            certificateContainer.style.backgroundColor = 'white';
+            certificateContainer.style.borderRadius = '10px';
+            certificateContainer.style.padding = '40px';
+            certificateContainer.style.maxWidth = '800px';
+            certificateContainer.style.width = '90%';
+            certificateContainer.style.textAlign = 'center';
+            certificateContainer.style.position = 'relative';
+            certificateContainer.style.transform = 'scale(0.9)';
+            certificateContainer.style.transition = 'transform 0.3s ease';
+            
+            // Certificate content
+            certificateContainer.innerHTML = `
+                <div style="position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 24px;" onclick="document.body.removeChild(this.parentNode.parentNode)">×</div>
+                <div style="border: 10px solid #6e8efb; border-radius: 5px; padding: 20px; background: url('data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%236e8efb' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E')">
+                    <h1 style="font-family: 'Poppins', serif; color: #333; margin-bottom: 20px; font-size: 28px;">Certificate of Completion</h1>
+                    <p style="font-size: 16px; margin-bottom: 30px;">This is to certify that</p>
+                    <h2 style="font-family: 'Poppins', serif; color: #6e8efb; font-size: 24px; margin-bottom: 30px;">Student Name</h2>
+                    <p style="font-size: 16px; margin-bottom: 20px;">has successfully completed the online examination with a score of</p>
+                    <h3 style="font-family: 'Poppins', serif; color: #6e8efb; font-size: 36px; margin-bottom: 30px;">${percentage}%</h3>
+                    <p style="font-size: 16px; margin-bottom: 40px;">Date: ${new Date().toLocaleDateString()}</p>
+                    <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+                        <div style="text-align: center; flex: 1;">
+                            <div style="border-top: 2px solid #333; padding-top: 10px; width: 80%; margin: 0 auto;">Examiner Signature</div>
+                        </div>
+                        <div style="text-align: center; flex: 1;">
+                            <div style="border-top: 2px solid #333; padding-top: 10px; width: 80%; margin: 0 auto;">Official Seal</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 30px;">
+                    <button style="background: var(--primary-gradient); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; margin-right: 15px;" onclick="downloadCertificate()">Download Certificate</button>
+                    <button style="background: var(--neutral-gradient); color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer;" onclick="document.body.removeChild(this.parentNode.parentNode.parentNode)">Close</button>
+                </div>
+            `;
+            
+            // Add to DOM
+            overlay.appendChild(certificateContainer);
+            document.body.appendChild(overlay);
+            
+            // Animate in
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                certificateContainer.style.transform = 'scale(1)';
+            }, 10);
+            
+            // Add download function
+            window.downloadCertificate = function() {
+                alert('Certificate download started!');
+                // In a real implementation, this would generate a PDF or image
+            };
+        }
+        
+        // Share results on social media
+        function shareResult(platform) {
+            const text = `I scored ${percentage}% on my online exam!`;
+            const url = window.location.href;
+            
+            let shareUrl = '';
+            
+            switch(platform) {
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+                    break;
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+                    break;
+            }
+            
+            // Open share dialog
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        }
+        
+        // Add floating animation to background shapes
+        const shapes = document.querySelectorAll('.shape');
+        shapes.forEach((shape, index) => {
+            shape.style.animation = `float ${3 + index * 0.5}s ease-in-out infinite`;
+            shape.style.animationDelay = `${index * 0.5}s`;
+        });
+    </script>
+</body>
+</html>

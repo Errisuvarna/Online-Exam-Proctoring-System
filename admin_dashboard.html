@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        /* Gradient Background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1, h2 {
+            text-transform: uppercase;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Styled Form */
+        form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            width: 50%;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            animation: popUp 0.5s ease-in-out;
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        button {
+            background: linear-gradient(90deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            border: none;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Question List */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Logout Button */
+        .button {
+            background: linear-gradient(90deg, #06beb6, #48b1bf);
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <form method="post" onsubmit="return validateForm()">
+        <label>Question:</label>
+        <input type="text" name="question" id="question" required>
+        <label>Option 1:</label>
+        <input type="text" name="option1" id="option1" required>
+        <label>Option 2:</label>
+        <input type="text" name="option2" id="option2" required>
+        <label>Option 3:</label>
+        <input type="text" name="option3" id="option3" required>
+        <label>Option 4:</label>
+        <input type="text" name="option4" id="option4" required>
+        <label>Correct Answer:</label>
+        <select name="correct_answer" id="correct_answer">
+            <option value="1">Option 1</option>
+            <option value="2">Option 2</option>
+            <option value="3">Option 3</option>
+            <option value="4">Option 4</option>
+        </select>
+        <button type="submit">Add Question</button>
+    </form>
+
+    <h2>Questions</h2>
+    <ul>
+        {% for question in questions %}
+            <li>{{ question.question }}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="/logout" class="button">Logout</a>
+
+    <script>
+        function validateForm() {
+            let question = document.getElementById("question").value;
+            let option1 = document.getElementById("option1").value;
+            let option2 = document.getElementById("option2").value;
+            let option3 = document.getElementById("option3").value;
+            let option4 = document.getElementById("option4").value;
+            let correct_answer = document.getElementById("correct_answer").value;
+
+            if (!question || !option1 || !option2 || !option3 || !option4 || !correct_answer) {
+                alert("All fields are required!");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>

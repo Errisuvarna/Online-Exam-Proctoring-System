@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Online Exam</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6e8efb, #a777e3);
+            --danger-gradient: linear-gradient(135deg, #ff5858, #f857a6);
+            --border-radius: 8px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            background: var(--primary-gradient);
+            color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            box-shadow: var(--box-shadow);
+        }
+
+        #cheating-alert {
+            background: var(--danger-gradient);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        #exam-form {
+            background: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        #exam-form p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        button[type="submit"] {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: var(--box-shadow);
+        }
+
+        #timer {
+            background: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+        }
+    </style>
+</head>
+<body>
+    <h2>Online Exam</h2>
+
+    <div id="cheating-alert" style="display: none;">✅ No cheating detected.</div>
+
+    <h2>Live Webcam Feed</h2>
+    <video id="webcam" width="640" height="480" autoplay playsinline style="border-radius: 8px; box-shadow: var(--box-shadow); margin-bottom: 20px;"></video>
+
+    <form id="exam-form" action="/submit_exam" method="POST">
+        {% for question in questions %}
+            <p>{{ question.question }}</p>
+            <input type="radio" name="q{{ question.id }}" value="{{ question.option1 }}"> {{ question.option1 }}<br>
+            <input type="radio" name="q{{ question.id }}" value="{{ question.option2 }}"> {{ question.option2 }}<br>
+            <input type="radio" name="q{{ question.id }}" value="{{ question.option3 }}"> {{ question.option3 }}<br>
+            <input type="radio" name="q{{ question.id }}" value="{{ question.option4 }}"> {{ question.option4 }}<br>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+
+    <p id="timer">Time Left: 60s</p>
+
+    <script>
+        var timeLeft = 60;
+        var timerInterval = setInterval(function () {
+            timeLeft--;
+            document.getElementById("timer").textContent = "Time Left: " + timeLeft + "s";
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById("exam-form").submit();
+            }
+        }, 1000);
+
+        const video = document.getElementById('webcam');
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                alert("Webcam access denied.");
+                console.error(err);
+            });
+
+        let cheatCount = 0;
+        const MAX_CHEATS = 3;
+        const userId = '{{ session.user_id }}';
+
+        setInterval(() => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+
+            const imageData = canvas.toDataURL('image/jpeg');
+
+            fetch('/detect_cheating', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imageData, user_id: userId })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    let cheating = data.cheating;
+                    let cheatingDetected = (cheating && cheating.includes("Yes"));
+
+                    if (cheatingDetected) {
+                        cheatCount++;
+                        document.getElementById('cheating-alert').textContent = `❌ Cheating detected! Violation #${cheatCount}`;
+                        document.getElementById('cheating-alert').style.background = "var(--danger-gradient)";
+                        document.getElementById('cheating-alert').style.display = "block";
+
+                        if (cheatCount >= MAX_CHEATS) {
+                            alert('🚨 Exam terminated due to repeated cheating!');
+                            window.location.href = '/logout';
+                        }
+                    } else {
+                        document.getElementById('cheating-alert').textContent = '✅ No cheating detected.';
+                        document.getElementById('cheating-alert').style.background = "var(--primary-gradient)";
+                        document.getElementById('cheating-alert').style.display = "block";
+                    }
+                });
+        }, 5000);
+    </script>
+</body>
+</html>
