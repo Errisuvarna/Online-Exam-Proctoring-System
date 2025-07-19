@@ -1,0 +1,3 @@
+[18:45:29] Blink: No, Mouth: Closed, Head Pose: Center, Cheating: No
+[18:45:34] Blink: Yes, Mouth: Closed, Head Pose: Center, Cheating: Yes (cell phone)
+[18:45:39] Blink: No, Mouth: Open, Head Pose: Center, Cheating: No

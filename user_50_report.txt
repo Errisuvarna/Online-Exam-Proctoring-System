@@ -1,0 +1,4 @@
+[18:33:13] Blink: No, Mouth: Closed, Head Pose: Down, Cheating: No
+[18:33:18] Blink: Yes, Mouth: Open, Head Pose: Down, Cheating: No
+[18:33:23] Blink: No, Mouth: Closed, Head Pose: Down, Cheating: No
+[18:33:28] Blink: Yes, Mouth: Closed, Head Pose: Down, Cheating: No

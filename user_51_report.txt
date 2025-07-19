@@ -1,0 +1,11 @@
+[18:41:53] Blink: No, Mouth: Closed, Head Pose: Down, Cheating: No
+[18:41:57] Blink: No, Mouth: Open, Head Pose: Up, Cheating: No
+[18:42:03] Blink: No, Mouth: Open, Head Pose: Down, Cheating: Yes (cell phone)
+[18:42:08] Blink: Yes, Mouth: Closed, Head Pose: Down, Cheating: No
+[18:42:13] Blink: No, Mouth: Closed, Head Pose: Down, Cheating: No
+[18:42:18] Blink: Yes, Mouth: Open, Head Pose: Down, Cheating: No
+[18:42:23] Blink: No, Mouth: Closed, Head Pose: Down, Cheating: Yes (cell phone)
+[18:42:28] Blink: Yes, Mouth: Closed, Head Pose: Down, Cheating: No
+[18:42:56] Blink: Yes, Mouth: Closed, Head Pose: Right, Cheating: No
+[18:43:01] Blink: No, Mouth: Closed, Head Pose: Right, Cheating: Yes (cell phone)
+[18:43:06] Blink: Yes, Mouth: Open, Head Pose: Right, Cheating: No

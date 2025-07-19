@@ -1,0 +1,11 @@
+[18:20:02] Detected: ['person'] | Cheating: No
+[18:20:07] Detected: ['person'] | Cheating: No
+[18:20:12] Detected: ['cell phone', 'person'] | Cheating: Yes
+[18:20:17] Detected: ['person'] | Cheating: No
+[18:20:44] Detected: ['person'] | Cheating: No
+[18:20:49] Detected: ['person'] | Cheating: No
+[18:20:54] Detected: ['person'] | Cheating: No
+[18:20:59] Detected: ['person', 'cell phone'] | Cheating: Yes
+[18:21:04] Detected: ['person'] | Cheating: No
+[18:21:09] Detected: ['cell phone', 'person'] | Cheating: Yes
+[18:21:14] Detected: ['person'] | Cheating: No
